@@ -32,22 +32,41 @@ public class SampleHandler extends AbstractHandler {
 
         List<DsOperation> dsOperations = tx.getOperations();
 
+/*
         logger.info("Thread name : " + Thread.currentThread().getName());
+*/
 
-        logger.info("DsEvent " + e.toString());
-        logger.info("DsEvent " + e.getMetaData().toString());
-        logger.info("DsEvent " + e.getEventSource().toString());
-
+        //logger.info("\n=============================================================================");
+        //logger.info("DsEvent " + e.toString());
+        //logger.info("DsEvent " + e.getMetaData().toString());
+        //logger.info("DsEvent " + e.getEventSource().toString());
+        //logger.info("-----------------------------------------------------------------------------");
+/*
+        logger.info("getPosition() " + op.getPosition() +
+                " getTranID() " + op.getTranID() +
+                " getPositionSeqno() " + op.getPositionSeqno() +
+                " getOperationSeqno() " + op.getOperationSeqno() +
+                " getPositionRba() " + op.getPositionRba());
         dsOperations.forEach
                 (i -> {
                     logger
                         .info(
-                            i.getRecord().toString() + "\n" +
-                            i.getOperationType().toString() + " " + i.getPosition() + "\n" +
-                            i.toString() + "\n" +
-                            i.getSqlType() + "\n" +
-                            i.getColumns().toString() + "\n" +
-                            i.getTableMetaData().toString() + " " + i.getTableName()
+                            "toString() " + i.toString() + "\n" +
+                            //"getRecord() " + i.getRecord().toString() + "\n" +
+                            //"getOperationType() " + i.getOperationType().toString() + "\n" +
+                            "getPosition() " + i.getPosition() + "\n" +
+                            //"getSqlType() " + i.getSqlType() + "\n" +
+                            //"getColumns() " + i.getColumns().toString() + "\n" +
+                            "getTableName() " + i.getTableName() + "\n" +
+                            //"getTableMetaData() " + i.getTableMetaData().toString() + "\n" +
+                            "getCsnStr() " + i.getCsnStr() + "\n" +
+                            //"getReadTimeAsString() " + i.getReadTimeAsString() + "\n" +
+                            //"getTimestampAsString() " + i.getTimestampAsString() + "\n" +
+                            //"getXidStr() " + i.getXidStr() + "\n" +
+                            //"getOperationSeqno() " + i.getOperationSeqno() + "\n" +
+                            "getPositionRba() " + i.getPositionRba() + "\n" +
+                            //"getPositionSeqno() " + i.getPositionSeqno() + "\n" +
+                            "getTranID() " + i.getTranID()
                         );
                             try {
                                 pushService.insertInto(i.getRecord().toString());
@@ -57,27 +76,56 @@ public class SampleHandler extends AbstractHandler {
                             }
                         }
                 );
+*/
 
-        dsOperations.forEach(i ->
-            i.getColumns().forEach(c ->
-                    logger.info(
-                            "Before : " + c.getBeforeValue() + "        After : " + c.getAfterValue())
-                    )
+        final int[] j = {0};
+        StringBuilder s = new StringBuilder();
+        dsOperations.forEach(i -> {
+            s.append("{");
+            s.append(i.getTimestampAsString());
+            s.append("}");
+            s.append(",");
+            s.append("{");
+            s.append(i.getSqlType());
+            s.append("}");
+            s.append(",");
+            s.append("{");
+            s.append(i.getTableMetaData().getTableName());
+            s.append("}");
+            s.append(",");
+            s.append("{");
+            s.append(i.getXidStr());
+            s.append(",");
+            s.append(i.getCsnStr());
+            s.append(",");
+            s.append(i.getOperationSeqno());
+            s.append("}");
+            s.append(",");
+            i.getColumns().forEach(c -> {
+                s.append("{");
+                s.append(i.getTableMetaData().getColumnName(j[0]++));
+                s.append(":");
+                s.append(c.getBeforeValue());
+                s.append(",");
+                s.append(c.getAfterValue());
+                s.append("}");
+            });
+            logger.info(String.valueOf(s));
+            }
         );
-
 
         return GGDataSource.Status.OK;
     }
 
     @Override
     public GGDataSource.Status transactionCommit(DsEvent e, DsTransaction tx) {
-        logger.info("DsEvent " + e.toString());
+        logger.info(e.toString());
         return super.transactionCommit(e, tx);
     }
 
     @Override
     public GGDataSource.Status metaDataChanged(DsEvent e, DsMetaData meta) {
-        Logger.getLogger(SampleHandler.class.getName()).info("DsEvent " + e.toString());
+        //Logger.getLogger(SampleHandler.class.getName()).info("DsEvent " + e.toString());
         return super.metaDataChanged(e, meta);
     }
 
