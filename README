@@ -8,3 +8,4 @@ mvn install:install-file -Dfile=Downloads/ggutil-19.1.0.0.5.007.jar -DgroupId=co
 mvn install:install-file -Dfile=Downloads/ggdbutil-19.1.0.0.5.007.jar -DgroupId=com.oracle.goldengate -DartifactId=ggdbutil -Dversion=19.1.0.0.5.007 -Dpackaging=jar
 mvn install:install-file -Dfile=Downloads/gguserexitapi-19.1.0.0.5.007.jar -DgroupId=com.oracle.goldengate -DartifactId=gguserexitapi -Dversion=19.1.0.0.5.007 -Dpackaging=jar
 
+SPRING-BOOT
