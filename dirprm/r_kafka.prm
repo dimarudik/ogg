@@ -1,7 +1,0 @@
-REPLICAT R_KAFKA
-getenv (JAVA_HOME)
-getenv (PATH)
-getenv (LD_LIBRARY_PATH)
-TARGETDB LIBFILE libggjava.so SET property=dirprm/kafka.props
-REPORTCOUNT EVERY 1 MINUTES, RATE
-MAP *.*, TARGET *.*;
