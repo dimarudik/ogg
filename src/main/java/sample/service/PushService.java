@@ -1,7 +1,6 @@
 package sample.service;
 
-import sample.SampleHandler;
-import sample.config.DataSource;
+import sample.config.HCPDataSource;
 import sample.model.BrokenTX;
 
 import java.io.*;
@@ -19,12 +18,12 @@ public class PushService implements IPushService {
 
     @Override
     public boolean init() throws SQLException {
-        return DataSource.init();
+        return HCPDataSource.init();
     }
 
     @Override
     public void closeHikariPool() {
-        DataSource.closeHikariPool();
+        HCPDataSource.closeHikariPool();
     }
 
     @Override
@@ -32,7 +31,7 @@ public class PushService implements IPushService {
 
         PreparedStatement preparedStatement = null;
         try {
-            connection = DataSource.getConnection();
+            connection = HCPDataSource.getConnection();
             connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement("insert into hr.identities (name) values (?)");
             //preparedStatement = connection.prepareStatement("insert into hr.identities (id, name) values (1, ?)");

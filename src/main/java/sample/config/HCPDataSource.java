@@ -2,6 +2,7 @@ package sample.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.context.annotation.Configuration;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ import java.util.logging.Logger;
 
 //https://www.baeldung.com/hikaricp
 
-public class DataSource {
+public class HCPDataSource {
 
     private static final HikariConfig config = new HikariConfig();
     private static final HikariDataSource ds;
@@ -26,7 +27,7 @@ public class DataSource {
         ds = new HikariDataSource( config );
     }
 
-    private DataSource(){}
+    private HCPDataSource(){}
 
     public static Connection getConnection() throws SQLException {
         return ds.getConnection();
@@ -38,5 +39,9 @@ public class DataSource {
 
     public static void closeHikariPool() {
         ds.close();
+    }
+
+    public String printMe(){
+        return "It's me";
     }
 }
