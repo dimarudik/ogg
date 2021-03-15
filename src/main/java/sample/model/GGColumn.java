@@ -7,15 +7,17 @@ import oracle.goldengate.datasource.DsOperation;
 import java.sql.JDBCType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GGColumn extends AbstractGGColumn {
+public class GGColumn {
 
-    private final String columnName;
-    private final String jdbcColumnType;
-    private final Long columnLength;
-    private final Boolean isChanged;
-    private final Boolean isKeyCol;
-    private final StringBuffer beforeValue = new StringBuffer();
-    private final StringBuffer afterValue = new StringBuffer();
+    private String columnName;
+    private String jdbcColumnType;
+    private Long columnLength;
+    private Boolean isChanged;
+    private Boolean isKeyCol;
+    private StringBuffer beforeValue = new StringBuffer();
+    private StringBuffer afterValue = new StringBuffer();
+
+    public GGColumn(){}
 
     public GGColumn(DsOperation operation, DsColumn column, Integer columnIndex){
         columnName = operation.getTableMetaData().getColumnName(columnIndex);
@@ -31,6 +33,42 @@ public class GGColumn extends AbstractGGColumn {
         return columnName;
     }
 
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public String getJdbcColumnType() {
+        return jdbcColumnType;
+    }
+
+    public void setJdbcColumnType(String jdbcColumnType) {
+        this.jdbcColumnType = jdbcColumnType;
+    }
+
+    public Long getColumnLength() {
+        return columnLength;
+    }
+
+    public void setColumnLength(Long columnLength) {
+        this.columnLength = columnLength;
+    }
+
+    public Boolean getIsChanged() {
+        return isChanged;
+    }
+
+    public void setIsChanged(Boolean changed) {
+        isChanged = changed;
+    }
+
+    public Boolean getIsKeyCol() {
+        return isKeyCol;
+    }
+
+    public void setIsKeyCol(Boolean keyCol) {
+        isKeyCol = keyCol;
+    }
+
     public StringBuffer getBeforeValue() {
         return beforeValue;
     }
@@ -39,20 +77,5 @@ public class GGColumn extends AbstractGGColumn {
         return afterValue;
     }
 
-    public Long getColumnLength() {
-        return columnLength;
-    }
-
-    public String getJdbcColumnType() {
-        return jdbcColumnType;
-    }
-
-    public Boolean getIsChanged() {
-        return isChanged;
-    }
-
-    public Boolean getIsKeyCol() {
-        return isKeyCol;
-    }
 
 }

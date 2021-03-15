@@ -10,17 +10,19 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GGRecord extends AbstractGGRecord {
+public class GGRecord {
 
-    private final String timestampAsString;
-    private final String sqlType;
-    private final String tableName;
-    private final String xid;
-    private final String csn;
-    private final Integer operationSeqNo;
-    private final Boolean isLast;
-    private final Boolean hasLobValue;
-    private final List<AbstractGGColumn> ggColumns;
+    private String timestampAsString;
+    private String sqlType;
+    private String tableName;
+    private String xid;
+    private String csn;
+    private Integer operationSeqNo;
+    private Boolean isLast;
+    private Boolean hasLobValue;
+    private List<GGColumn> ggColumns;
+
+    public GGRecord(){}
 
     public GGRecord(DsOperation operation) {
         timestampAsString = operation.getTimestampAsString();
@@ -66,14 +68,14 @@ public class GGRecord extends AbstractGGRecord {
         return hasLobValue;
     }
 
-    public List<AbstractGGColumn> getGGColumns() {
+    public List<GGColumn> getGGColumns() {
         return ggColumns;
     }
 
-    private List<AbstractGGColumn> getGGColumns(DsOperation op) {
-        List<AbstractGGColumn> columns = new ArrayList<>();
+    private List<GGColumn> getGGColumns(DsOperation op) {
+        List<GGColumn> columns = new ArrayList<>();
         op.getColumns().forEach(withCounter((i, column) -> {
-            AbstractGGColumn ggColumn = new GGColumn(op, column, i);
+            GGColumn ggColumn = new GGColumn(op, column, i);
             if (ggColumn.getIsKeyCol() || ggColumn.getIsChanged()) {
                 switch (op.getSqlType()) {
                     case "INSERT" :
@@ -97,6 +99,46 @@ public class GGRecord extends AbstractGGRecord {
     private static <T> Consumer<T> withCounter(BiConsumer<Integer, T> consumer) {
         AtomicInteger counter = new AtomicInteger(0);
         return item -> consumer.accept(counter.getAndIncrement(), item);
+    }
+
+
+
+
+
+    public void setTimestampAsString(String timestampAsString) {
+        this.timestampAsString = timestampAsString;
+    }
+
+    public void setSqlType(String sqlType) {
+        this.sqlType = sqlType;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public void setXid(String xid) {
+        this.xid = xid;
+    }
+
+    public void setCsn(String csn) {
+        this.csn = csn;
+    }
+
+    public void setOperationSeqNo(Integer operationSeqNo) {
+        this.operationSeqNo = operationSeqNo;
+    }
+
+    public void setIsLast(Boolean last) {
+        isLast = last;
+    }
+
+    public void setHasLobValue(Boolean hasLobValue) {
+        this.hasLobValue = hasLobValue;
+    }
+
+    public void setGGColumns(List<GGColumn> ggColumns) {
+        this.ggColumns = ggColumns;
     }
 
 }

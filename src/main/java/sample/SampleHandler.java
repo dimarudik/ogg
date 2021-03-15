@@ -6,17 +6,19 @@ import oracle.goldengate.datasource.*;
 import oracle.goldengate.datasource.meta.DsMetaData;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import sample.config.AppContext;
-import sample.model.AbstractGGRecord;
 import sample.model.GGRecord;
+import sample.service.PushService;
 
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 public class SampleHandler extends AbstractHandler {
 
     private final Logger logger = Logger.getLogger(SampleHandler.class.getName());
-    //private final PushService pushService = new PushService();
+    private PushService pushService;
     private Properties properties = null;
+    //private final RestTemplate restTemplate = new RestTemplate();
     private final ClassPathXmlApplicationContext context =
             new ClassPathXmlApplicationContext("./sample/appcontext.xml");
 
@@ -28,6 +30,9 @@ public class SampleHandler extends AbstractHandler {
         properties = dsConfiguration.getProperties();
 
         AppContext appContext = context.getBean(AppContext.class);
+        //AsyncConfiguration asyncConfiguration = context.getBean(AsyncConfiguration.class);
+        //Executor executor = context.getBean("taskExecutor", Executor.class);
+        pushService = context.getBean(PushService.class);
         Logger.getLogger(SampleHandler.class.getName()).info(appContext.printMe());
         appContext.publishedValues().forEach(i -> Logger.getLogger(SampleHandler.class.getName()).info(i.toString()));
 
@@ -36,7 +41,7 @@ public class SampleHandler extends AbstractHandler {
     @Override
     public GGDataSource.Status operationAdded(DsEvent e, DsTransaction tx, DsOperation op) {
         super.operationAdded(e, tx, op);
-        AbstractGGRecord ggRecord = new GGRecord(op);
+        GGRecord ggRecord = new GGRecord(op);
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -44,6 +49,8 @@ public class SampleHandler extends AbstractHandler {
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(ggRecord);
             //logger.info(jsonString);
+            //GGRecord record = restTemplate.postForObject("http://localhost:8080/api/ggrecord", ggRecord, GGRecord.class);
+            CompletableFuture<GGRecord> record = pushService.sendToRest(ggRecord);
         } catch (JsonProcessingException jsonProcessingException) {
             jsonProcessingException.printStackTrace();
         }
@@ -78,13 +85,6 @@ public class SampleHandler extends AbstractHandler {
         return "";
     }
 
-    // https://www.baeldung.com/java-foreach-counter
-/*
-    public static <T> Consumer<T> withCounter(BiConsumer<Integer, T> consumer) {
-        AtomicInteger counter = new AtomicInteger(0);
-        return item -> consumer.accept(counter.getAndIncrement(), item);
-    }
-*/
 /*
     public static void main(String[] args) throws SQLException {
 
